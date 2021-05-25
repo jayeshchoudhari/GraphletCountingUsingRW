@@ -55,11 +55,12 @@ int main(int argc, char *argv[])
     VertexIdx randStartPoint = next() % numVertices;
     cout << "Got start point -- "<< randStartPoint << "\n";
 
-    // rwCount3Graphlets C3;
-    rwCount4Graphlets C4;
+    rwCount3Graphlets C3;
+    // rwCount4Graphlets C4;
 
     // vector<int> percEdges = {1, 5, 7, 10};
-    vector<double> percEdges = {0.1, 0.3, 0.5, 0.7};
+    // vector<double> percEdges = {0.1, 0.3, 0.5, 0.7};
+    vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
 
     cout << "Going for random walks....\n";
     for(unsigned int j = 0; j < percEdges.size(); j++)
@@ -73,17 +74,18 @@ int main(int argc, char *argv[])
         {
             beginClock = chrono::steady_clock::now();
             rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
-            cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "\n";
-            // double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
-            double kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
+            cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";
+            double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
+            // double kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
             endClock = chrono::steady_clock::now();
             perIterationTime = chrono::duration_cast<std::chrono::microseconds> (endClock - beginClock).count();
             totalTimePerEdgePerc += perIterationTime;
             cout << k << "-th Estimate = " << kGraphletCount << endl;
-	        outFile << setprecision(20) << kGraphletCount << " " << setprecision(20) <<  perIterationTime << endl;
-
+            outFile << setprecision(20) << kGraphletCount << " " << setprecision(20) <<  perIterationTime << endl;
+            
             allRunEsts.push_back(kGraphletCount);
             avgVal = avgVal + (kGraphletCount - avgVal)/(k+1);
+
             cout << "Running avg = " << avgVal << endl;
             cout << "Time per iteration = " << perIterationTime << endl;
         }
