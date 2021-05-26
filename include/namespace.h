@@ -1,3 +1,6 @@
+#ifndef NAMESPACE_H
+#define NAMESPACE_H
+
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -41,3 +44,5 @@ struct pivotNeighborsAndSizes_3_2{
     vector<VertexIdx> pivotNeighbors;
     vector<unsigned int> neighborSizes;
 };
+
+#endif      // NAMESPACE_H
