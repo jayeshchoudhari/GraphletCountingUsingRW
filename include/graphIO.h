@@ -33,24 +33,25 @@ class Graph
         vector<VertexIdx> getNeighbors(VertexIdx u);
         VertexIdx getKthNeighbor(VertexIdx u, int k);
     	bool checkEdgeInAdjList(VertexIdx v1, VertexIdx v2);
+		bool checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
+        
+		struct pivotNeighborsAndSizes_3_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
+		Count getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode);
+        
         int printGraphDetails();
         
-        // RW Functions...
+		// RW Functions...
 		vector<OrderedEdge> getAllEdgesFromRStepRandomWalk(Count numSteps, VertexIdx startNode);
 		// ePair lStepRandomWalk(Count, VertexIdx);
+
+
 
     	int setQ(int qVal);
     	int CountG3s();
 
-        
 		// vector<VertexIdx> getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
-        struct pivotNeighborsAndSizes_3_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
-		Count getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode);
 		
-		bool checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
 
-		double buildCliqueGraphlet(vector<OrderedEdge> rwEdges, int maxGraphLetSize);
-		// vector<VertexIdx> createSetOfNodesFromEdges(vector<ePair> subGraphlet);
 		vector<VertexIdx> createSetOfNodesFromEdges(vector<OrderedEdge> subGraphlet);
 		vector<VertexIdx> getMinNeighborhoodSet(vector<vector<int>> allCombsOfQNodes, vector<VertexIdx> subGraphletNodes);
 		// vector<vector<VertexIdx>> getPivotNeighborSetsForAllSubGraphlets(vector<vector<ePair>> R_j);

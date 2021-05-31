@@ -1,5 +1,6 @@
 #include "namespace.h"
 #include "graphIO.h"
+#include "utilities.h"
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -204,3 +205,111 @@ bool Graph :: checkEdgeInAdjList(VertexIdx v1, VertexIdx v2)
     boolVar = binary_search (nbrs.begin(), nbrs.end(), v2);
     return boolVar;
 }
+
+// check if the last vertex in the list of arguments is connected to at least 2 of other 3 vertices...
+bool Graph :: checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode)
+{
+	bool isConnected = 0;
+	bool uxEdge = checkEdgeInAdjList(uNode, xNode);
+
+	if(uxEdge)
+	{
+		bool vxEdge = checkEdgeInAdjList(vNode, xNode);
+
+		if(vxEdge)
+		{
+			isConnected = 1;				// uxEdge and vxEdge
+		}
+		else
+		{
+			bool wxEdge = checkEdgeInAdjList(wNode, xNode);
+			if(wxEdge)
+			{
+				isConnected = 1;			// uxEdge and wxEdge
+			}
+		}
+	}
+	else
+	{
+		bool vxEdge = checkEdgeInAdjList(vNode, xNode);
+
+		if(vxEdge)
+		{
+			bool wxEdge = checkEdgeInAdjList(wNode, xNode);
+			if(wxEdge)
+			{
+				isConnected = 1;			// vxEdge and wxEdge
+			}
+		}
+	}
+
+	return isConnected;
+}
+
+Count Graph :: getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode)
+{
+	vector<VertexIdx> uNeighbors = getNeighbors(uNode);
+	vector<VertexIdx> vNeighbors = getNeighbors(vNode);
+
+	vector<VertexIdx> uvNeighborsVector = getUnionOfNeighbors(uNeighbors, vNeighbors);
+	Count numNeighbors = (Count)uvNeighborsVector.size();
+	return numNeighbors;
+}
+
+struct pivotNeighborsAndSizes_3_2 Graph :: getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q)
+{
+	
+	VertexIdx uNode, vNode, wNode;
+	uNode = tempComponent[0];
+	vNode = tempComponent[1];
+	wNode = tempComponent[2];
+
+	vector<VertexIdx> uNeighbors = getNeighbors(uNode);
+	vector<VertexIdx> vNeighbors = getNeighbors(vNode);
+	vector<VertexIdx> wNeighbors = getNeighbors(wNode);
+
+	vector<VertexIdx> uvNeighbors, vwNeighbors, uwNeighbors;
+	uvNeighbors = getUnionOfNeighbors(uNeighbors, vNeighbors);
+	vwNeighbors = getUnionOfNeighbors(vNeighbors, wNeighbors);
+	uwNeighbors = getUnionOfNeighbors(uNeighbors, wNeighbors);
+
+	unsigned int uvSize, vwSize, uwSize;
+	uvSize = uvNeighbors.size();
+	uwSize = uwNeighbors.size();
+	vwSize = vwNeighbors.size();
+
+	vector<unsigned int> sizeVector;
+	sizeVector.push_back(uvSize); 
+	sizeVector.push_back(uwSize); 
+	sizeVector.push_back(vwSize);
+
+	// cout << "returning -- " << sizeVector[0] << " " << sizeVector[1] << " " << sizeVector[2] << "\n";
+	// cout << "created vector of sizes -- " << uvSize << " " << uwSize << " " << vwSize << "\n";
+
+	struct pivotNeighborsAndSizes_3_2 neigborsAndSizes;
+
+	if((uvSize <= vwSize) && (uvSize <= uwSize))
+	{
+		neigborsAndSizes.pivotNeighbors = uvNeighbors;
+		neigborsAndSizes.neighborSizes = sizeVector;
+		// struct pivotNeighborsAndSizes_3_2 neigborsAndSizes = {uvNeighbors, sizeVector};
+		// return neigborsAndSizes;
+	}
+	else if((vwSize <= uwSize) && (vwSize <= uvSize))
+	{
+		neigborsAndSizes.pivotNeighbors = vwNeighbors;
+		neigborsAndSizes.neighborSizes = sizeVector;
+		// struct pivotNeighborsAndSizes_3_2 neigborsAndSizes = {vwNeighbors, sizeVector};
+		// return neigborsAndSizes;
+	}
+	else if((uwSize <= vwSize) && (uwSize <= uvSize))
+	{
+		neigborsAndSizes.pivotNeighbors = uwNeighbors;
+		neigborsAndSizes.neighborSizes = sizeVector;
+		// struct pivotNeighborsAndSizes_3_2 neigborsAndSizes = {uwNeighbors, sizeVector};
+		// return neigborsAndSizes;
+	}
+
+	return neigborsAndSizes;
+}
+

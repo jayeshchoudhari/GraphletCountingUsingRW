@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
     VertexIdx randStartPoint = next() % numVertices;
     cout << "Got start point -- "<< randStartPoint << "\n";
 
-    rwCount3Graphlets C3;
-    // rwCount4Graphlets C4;
+    // rwCount3Graphlets C3;
+    rwCount4Graphlets C4;
 
     // vector<int> percEdges = {1, 5, 7, 10};
     // vector<double> percEdges = {0.1, 0.3, 0.5, 0.7};
@@ -73,10 +73,13 @@ int main(int argc, char *argv[])
         for(int k = 0; k < numRandomWalks; k++)
         {
             beginClock = chrono::steady_clock::now();
+            
             rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
             cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";
-            double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
+            // double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
             // double kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
+            double kGraphletCount =  C4.count4ChordCycle(G, rWEdges);	// passing all seg_2's
+
             endClock = chrono::steady_clock::now();
             perIterationTime = chrono::duration_cast<std::chrono::microseconds> (endClock - beginClock).count();
             totalTimePerEdgePerc += perIterationTime;
