@@ -74,10 +74,10 @@ int main(int argc, char *argv[])
         totalTimePerEdgePerc = 0;
         for(int k = 0; k < numRandomWalks; k++)
         {
+            beginClock = chrono::steady_clock::now();
             rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
             cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";
             
-            beginClock = chrono::steady_clock::now();
             double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
             // double kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
             // double kGraphletCount =  C4.count4ChordCycle(G, rWEdges);	// passing all seg_2's
