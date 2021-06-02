@@ -36,14 +36,14 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 
     double X = 0, Y = 0, Z = 0;
 
+    discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
+    
     // omp_set_num_threads(1);
 	// 18060671
     // #pragma omp parallel for
     for(int s = 0; s < subsample_size; s++)
 	{
-        discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
         int sampledId = distribution(gen);
-
         VertexIdx uNode = rwEdges[sampledId].u;
 		Count deg_of_u = rwEdges[sampledId].degree;
 		uniform_int_distribution<int> distNbor(0, deg_of_u - 1);
@@ -91,12 +91,12 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 	int l3_subsample_size = l3;
     ljVals.push_back(l3_subsample_size);
 
+	discrete_distribution<int> nextLevelDist (nextLevelDegrees.begin(), nextLevelDegrees.end());
 	// omp_set_num_threads(1);
 	// #pragma omp parallel for
     for(int s = 0; s < l3_subsample_size; s++)
 	{
-		discrete_distribution<int> distribution (nextLevelDegrees.begin(), nextLevelDegrees.end());
-        int sampledId = distribution(gen);
+        int sampledId = nextLevelDist(gen);
 
         VertexIdx uNode = nextLevelComponents[sampledId][0];
         VertexIdx vNode = nextLevelComponents[sampledId][1];
@@ -178,12 +178,12 @@ double rwCount4Graphlets :: count4ChordCycle(Graph &G, vector<OrderedEdge> rwEdg
 
     double X = 0, Y = 0, Z = 0;
 
+	discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
     // omp_set_num_threads(1);
 	// 18060671
     // #pragma omp parallel for
     for(int s = 0; s < subsample_size; s++)
 	{
-		discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
 		int sampledId = distribution(gen);
 		
 		VertexIdx uNode = rwEdges[sampledId].u;
@@ -246,12 +246,12 @@ double rwCount4Graphlets :: count4ChordCycle(Graph &G, vector<OrderedEdge> rwEdg
 	int l3_subsample_size = l3/5;
     ljVals.push_back(l3_subsample_size);
 
+	discrete_distribution<int> nextLevelDist (nextLevelDegrees.begin(), nextLevelDegrees.end());
 	// omp_set_num_threads(1);
 	// #pragma omp parallel for
 	for(int s = 0; s < l3_subsample_size; s++)
 	{
-		discrete_distribution<int> distribution (nextLevelDegrees.begin(), nextLevelDegrees.end());
-		int sampledId = distribution(gen);
+		int sampledId = nextLevelDist(gen);
 
 		VertexIdx uNode = nextLevelComponents[sampledId][0];
 		VertexIdx vNode = nextLevelComponents[sampledId][1];

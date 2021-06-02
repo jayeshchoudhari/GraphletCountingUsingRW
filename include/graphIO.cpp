@@ -1,7 +1,7 @@
 #include "namespace.h"
 #include "graphIO.h"
 #include "utilities.h"
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 
 using namespace std;
 
@@ -201,8 +201,8 @@ vector<OrderedEdge> Graph :: getAllEdgesFromRStepRandomWalk(Count numSteps, Vert
 bool Graph :: checkEdgeInAdjList(VertexIdx v1, VertexIdx v2)
 {
     bool boolVar; 
-    vector<VertexIdx> nbrs = adjList[v1];
-    boolVar = binary_search (nbrs.begin(), nbrs.end(), v2);
+    // vector<VertexIdx> nbrs = adjList[v1];
+    boolVar = binary_search (adjList[v1].begin(), adjList[v1].end(), v2);
     return boolVar;
 }
 

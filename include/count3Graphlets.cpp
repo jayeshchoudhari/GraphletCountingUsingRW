@@ -1,7 +1,7 @@
 #include "namespace.h"
 #include "graphIO.h"
 #include "count3Graphlets.h"
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 
 using namespace std;
 
@@ -29,13 +29,13 @@ double rwCount3Graphlets :: countTriangleGraphlet(Graph &G, vector<OrderedEdge> 
     ljVals.push_back(subsample_size);
 
     double X = 0, Y = 0, Z = 0;
+    discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
 
     // omp_set_num_threads(2);
 	// 18060671
     // #pragma omp parallel for
     for(int s = 0; s < subsample_size; s++)
 	{
-        discrete_distribution<int> distribution (edge_degree_list.begin(), edge_degree_list.end());
         int sampledId = distribution(gen);
 
         VertexIdx uNode = rwEdges[sampledId].u;

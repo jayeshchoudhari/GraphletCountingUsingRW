@@ -3,7 +3,8 @@
 #include "include/count3Graphlets.h"
 #include "include/count4Graphlets.h"
 #include "include/utilities.h"
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+#include <iomanip>
 #include <ctime>
 #include <chrono>
 #include <omp.h>
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     int lStep = stoi(argv[2]);      /// not using this argument currently
 
     string outFileName = argv[3];
-	lStep = numEdges / 20;
+	// lStep = numEdges / 20;
 
     ofstream outFile;
     outFile.open(outFileName, ofstream::out);
@@ -55,12 +56,13 @@ int main(int argc, char *argv[])
     VertexIdx randStartPoint = next() % numVertices;
     cout << "Got start point -- "<< randStartPoint << "\n";
 
-    // rwCount3Graphlets C3;
-    rwCount4Graphlets C4;
+    rwCount3Graphlets C3;
+    // rwCount4Graphlets C4;
 
     // vector<int> percEdges = {1, 5, 7, 10};
     // vector<double> percEdges = {0.1, 0.3, 0.5, 0.7};
-    vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
+    // vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
+    vector<double> percEdges = {3.0};
 
     cout << "Going for random walks....\n";
     for(unsigned int j = 0; j < percEdges.size(); j++)
@@ -72,14 +74,13 @@ int main(int argc, char *argv[])
         totalTimePerEdgePerc = 0;
         for(int k = 0; k < numRandomWalks; k++)
         {
-            beginClock = chrono::steady_clock::now();
-            
             rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
             cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";
-            // double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
+            
+            beginClock = chrono::steady_clock::now();
+            double kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
             // double kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
-            double kGraphletCount =  C4.count4ChordCycle(G, rWEdges);	// passing all seg_2's
-
+            // double kGraphletCount =  C4.count4ChordCycle(G, rWEdges);	// passing all seg_2's
             endClock = chrono::steady_clock::now();
             perIterationTime = chrono::duration_cast<std::chrono::microseconds> (endClock - beginClock).count();
             totalTimePerEdgePerc += perIterationTime;
