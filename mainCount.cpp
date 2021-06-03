@@ -109,15 +109,14 @@ int main(int argc, char *argv[])
 
             perIterationTime = chrono::duration_cast<std::chrono::microseconds> (endClock - beginClock).count();
             totalTimePerEdgePerc += perIterationTime;
+
+            allRunEsts.push_back(kGraphletCount);
+            avgVal = avgVal + (kGraphletCount - avgVal)/(k+1);
+            // cout << "Running avg = " << avgVal << endl;
+            
             // cout << k << "-th Estimate = " << kGraphletCount << endl;
             cout << k << " " << percEdges[j] << " " << setprecision(20) << kGraphletCount << " " << setprecision(20) <<  perIterationTime << endl;
             outFile << k << " " << percEdges[j] << " " << setprecision(20) << kGraphletCount << " " << setprecision(20) <<  perIterationTime << endl;
-            
-            allRunEsts.push_back(kGraphletCount);
-            avgVal = avgVal + (kGraphletCount - avgVal)/(k+1);
-
-            cout << "Running avg = " << avgVal << endl;
-            cout << "Time per iteration = " << perIterationTime << endl;
         }
     }
 
