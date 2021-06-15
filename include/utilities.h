@@ -5,6 +5,7 @@ using namespace std;
 
 
 uint64_t next();
+VertexIdx getRandomStartPoint(Count numVertices);
 // Read file and get number of vertices and all the edges as a vector of vectors...
 pair<Count, vector<ePair>> getSetOfEdges(string graphFileName);
 vector<VertexIdx> getUnionOfNeighbors(vector<VertexIdx> set1, vector<VertexIdx> set2);

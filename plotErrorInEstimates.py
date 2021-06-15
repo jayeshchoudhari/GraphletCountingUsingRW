@@ -2,9 +2,10 @@ from __future__ import division
 import sys
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import numpy as np
 
-graphType = "g32"
-# graphType = "g46"
+# graphType = "g32"
+graphType = "g46"
 
 graphName = "orkut"
 # graphName = "sinaweibo"
@@ -19,8 +20,13 @@ allEstimates = defaultdict(list)
 
 percInd = 0
 
-# f = open("allOutput/4-Clique-sinaweibo.out")
-f = open("allOutput/3-Clique-orkut.out")
+# f = open("./allOutput/4-Clique-sinaweibo-singleRW.out")
+# f = open("allOutput/4-Clique-sinaweibo-high-newStart.out")
+# f = open("allOutput/4-Clique-sinaweibo-high.out")
+
+# f = open("./allOutput/3-Clique-orkut-singleRW.out")
+f = open("./allOutput/4-Clique-orkut-singleRW.out")
+# f = open("allOutput/4-Clique-orkut.out")
 
 xarr = []
 yarr = []
@@ -28,6 +34,12 @@ fivePercentLineXarr = []
 fivePercentLineYarr = []
 fivePercentLineYarrNeg = []
 exactCurve = []
+
+
+varXarr = []
+varYarr = []
+valuesYarr = []
+valuesStd = []
 
 prevFractionEdges = 0
 
@@ -39,16 +51,21 @@ for line in f:
         if percInd > 0:
             # print(xarr)
             # print(yarr)
-            # if xarr[0] > 1.0:
-            plt.plot(xarr, yarr, 'o', label=str(prevFractionEdges)+"%")
-            fivePercentLineXarr.append(xarr[0])
-            fivePercentLineYarr.append(5.0)
-            fivePercentLineYarrNeg.append(-5.0)
-            exactCurve.append(0.0)
+            if xarr[0] > 0.0:
+                plt.plot(xarr, yarr, 'o', label=str(prevFractionEdges)+"%")
+                # plt.plot(xarr[0], np.std(valuesYarr), 'o', label=str(prevFractionEdges)+"%")
+                fivePercentLineXarr.append(xarr[0])
+                fivePercentLineYarr.append(5.0)
+                fivePercentLineYarrNeg.append(-5.0)
+                exactCurve.append(0.0)
+                varXarr.append(xarr[0])
+                varYarr.append(np.std(yarr))
+                valuesStd.append(np.std(valuesYarr))
             # allEstimates[xarr[0]] = yarr
         percInd += 1
         xarr = []
         yarr = []
+        valuesYarr = []
         prevFractionEdges = fractionEdges
         
 
@@ -59,20 +76,27 @@ for line in f:
         xarr.append(fractionEdges)
         err = 100 * (estVal - staticExact)/staticExact
         yarr.append(err)
+        valuesYarr.append(estVal)
 
         if err > 100:
             print("Here ---- ", estVal)
     
 
 plt.plot(xarr, yarr, 'o', label=str(prevFractionEdges)+"%")
+# plt.plot(xarr[0], np.std(valuesYarr), 'o', label=str(prevFractionEdges)+"%")
 fivePercentLineXarr.append(xarr[0])
 fivePercentLineYarr.append(5.0)
 fivePercentLineYarrNeg.append(-5.0)
 exactCurve.append(0.0)
+varXarr.append(xarr[0])
+varYarr.append(np.std(yarr))
+valuesStd.append(np.std(valuesYarr))
 
 plt.plot(fivePercentLineXarr, fivePercentLineYarr, 'r--', label="5% Error")
 plt.plot(fivePercentLineXarr, fivePercentLineYarrNeg, 'r--', label="-5% Error")
 plt.plot(fivePercentLineXarr, exactCurve, 'r--*', label="Exact")
+# plt.plot(varXarr, varYarr, 'kD-', label="Std. Dev.")
+# plt.plot(varXarr, valuesStd, 'k*-', label="Std. Dev.(Estimate)")
 
 f.close()
 

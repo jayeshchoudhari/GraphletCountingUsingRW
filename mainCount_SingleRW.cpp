@@ -57,19 +57,31 @@ int main(int argc, char *argv[])
     std::chrono::steady_clock::time_point endClock;
     long long int perIterationTime = 0, totalTimePerEdgePerc = 0;
 
-    srand(10000);
+    // srand(10000);
     // int randStartPoint = rand() % numVertices;
     cout << "before the start point -- \n";
-    // VertexIdx randStartPoint = next() % numVertices;
     VertexIdx randStartPoint = getRandomStartPoint(numVertices);
-    cout << "Got random start points -- "<< randStartPoint << "\n";
+    cout << "Got start point -- "<< randStartPoint << "\n";
 
     // vector<int> percEdges = {1, 5, 7, 10};
-    vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0};
-    // vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
+    // vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0};
+    vector<float> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0};
     // vector<double> percEdges = {3.0};
 
-    cout << "Going for random walks....\n";
+    float maxPercentageValue = 10.0;
+    int maxPercentageEdges = (maxPercentageValue * (numEdges / 100)) + 1;
+
+    vector<vector<OrderedEdge>> allIncrementalRWEdges;
+    
+    for(int k = 0; k < numRandomWalks; k++)
+    {
+        rWEdges = G.getAllEdgesFromRStepRandomWalk(maxPercentageEdges, randStartPoint);
+        allIncrementalRWEdges.push_back(rWEdges);
+        cout << k << "-th Random walk -- Got random walk edges for k-th random walk" << rWEdges.size()  << "\n";
+    }
+
+    cout << "Got all the random walks each of max size...\n";
+
     for(unsigned int j = 0; j < percEdges.size(); j++)
     {
         int lStep = percEdges[j] * (numEdges / 100);
@@ -80,31 +92,32 @@ int main(int argc, char *argv[])
         for(int k = 0; k < numRandomWalks; k++)
         {
             beginClock = chrono::steady_clock::now();
-            rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
-            cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";
+            // rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
+            vector<OrderedEdge> slicedRwEdges(&allIncrementalRWEdges[k][0], &allIncrementalRWEdges[k][lStep]);
+            cout << k << "th Random Walk -- Got random walk edges.... -- " << slicedRwEdges.size() << "---" << percEdges[j] << "\n";
             
             double kGraphletCount = 0;
 
             if(whatCount.compare("g32") == 0)
             {
                 rwCount3Graphlets C3;
-                kGraphletCount =  C3.countTriangleGraphlet(G, rWEdges);	// passing all seg_2's
+                kGraphletCount =  C3.countTriangleGraphlet(G, slicedRwEdges);	// passing all seg_2's
             }
             else if(whatCount.compare("g43") == 0)
             {
                 rwCount4Graphlets C4;
-                // kGraphletCount =  C4.count4Cycle(G, rWEdges);	// passing all seg_2's
+                // kGraphletCount =  C4.count4Cycle(G, slicedRwEdges);	// passing all seg_2's
                 std::cout << "To be added...\n";
             }
             else if(whatCount.compare("g45") == 0)
             {
                 rwCount4Graphlets C4;
-                kGraphletCount =  C4.count4ChordCycle(G, rWEdges);	// passing all seg_2's
+                kGraphletCount =  C4.count4ChordCycle(G, slicedRwEdges);	// passing all seg_2's
             }
             else if(whatCount.compare("g46") == 0)
             {
                 rwCount4Graphlets C4;
-                kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
+                kGraphletCount =  C4.count4CliqueGraphlet(G, slicedRwEdges);	// passing all seg_2's
             }
             endClock = chrono::steady_clock::now();
 

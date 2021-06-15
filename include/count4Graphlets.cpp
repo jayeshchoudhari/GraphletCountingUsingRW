@@ -31,7 +31,7 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 	vector<VertexIdx> nextLevelDegrees;
 	double dR3 = 0.0;
 
-    int subsample_size = l2/50;
+    int subsample_size = l2/20;
     ljVals.push_back(subsample_size);
 
     double X = 0, Y = 0, Z = 0;
@@ -88,7 +88,7 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 	Count l3 = nextLevelComponents.size();
 
 	cout << "size of triangles -- " << l3 << endl;
-	int l3_subsample_size = l3;
+	int l3_subsample_size = l3/5;
     ljVals.push_back(l3_subsample_size);
 
 	discrete_distribution<int> nextLevelDist (nextLevelDegrees.begin(), nextLevelDegrees.end());
@@ -171,7 +171,7 @@ double rwCount4Graphlets :: count4ChordCycle(Graph &G, vector<OrderedEdge> rwEdg
 	vector<VertexIdx> nextLevelDegrees;
 	double dR3 = 0.0;
 
-    int subsample_size = l2/20;
+    int subsample_size = l2/10;
     ljVals.push_back(subsample_size);
 	// cout << "subsample_size = " << subsample_size << "\n";
 	// cout << "edge_degree_list_size = " << edge_degree_list.size() << "\n";

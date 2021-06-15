@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
     // int randStartPoint = rand() % numVertices;
     cout << "before the start point -- \n";
     // VertexIdx randStartPoint = next() % numVertices;
-    VertexIdx randStartPoint = getRandomStartPoint(numVertices);
-    cout << "Got random start points -- "<< randStartPoint << "\n";
+    // VertexIdx randStartPoint = getRandomStartPoint(numVertices);
+    // cout << "Got random start points -- "<< randStartPoint << "\n";
 
     // vector<int> percEdges = {1, 5, 7, 10};
     vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0};
@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
         totalTimePerEdgePerc = 0;
         for(int k = 0; k < numRandomWalks; k++)
         {
+            VertexIdx randStartPoint = getRandomStartPoint(numVertices);
+            cout << "Got random start points -- "<< randStartPoint << "\n";
+
             beginClock = chrono::steady_clock::now();
             rWEdges = G.getAllEdgesFromRStepRandomWalk(lStep, randStartPoint);
             cout << k << "th Random Walk -- Got random walk edges.... -- " << rWEdges.size() << "---" << percEdges[j] << "\n";

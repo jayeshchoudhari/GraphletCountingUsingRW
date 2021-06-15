@@ -54,6 +54,8 @@ Graph :: Graph(string graphFileName)		// constructor
 			}
 		}
 
+		graphFile.close();
+		
 		// store sorted vectors....
 		for(unsigned int i = 0; i < adjList.size(); i++)
 		{

@@ -25,7 +25,7 @@ double rwCount3Graphlets :: countTriangleGraphlet(Graph &G, vector<OrderedEdge> 
         dR2 += rwEdges[i].degree;
     }
 
-    int subsample_size = l2/50;
+    int subsample_size = l2/20;
     ljVals.push_back(subsample_size);
 
     double X = 0, Y = 0, Z = 0;
