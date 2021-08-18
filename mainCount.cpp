@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
             else if(whatCount.compare("g46") == 0)
             {
                 rwCount4Graphlets C4;
-                kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges);	// passing all seg_2's
+                kGraphletCount =  C4.count4CliqueGraphlet(G, rWEdges, 5, 20);	// passing all seg_2's
             }
             endClock = chrono::steady_clock::now();
 

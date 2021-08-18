@@ -7,8 +7,8 @@ import numpy as np
 # graphType = "g32"
 graphType = "g46"
 
-graphName = "orkut"
-# graphName = "sinaweibo"
+# graphName = "orkut"
+graphName = "sinaweibo"
 
 exact = {"g32" : {"orkut": 524643952, "sinaweibo": 212977684}, "g46" : {"orkut": 2427699127, "sinaweibo": 662717336}}
 
@@ -20,12 +20,18 @@ allEstimates = defaultdict(list)
 
 percInd = 0
 
+f = open("./allOutput/demet-sinaweibo_g46_60_60.out")
+# f = open("./allOutput/4-Clique-sinaweibo-moreEdges.out")
+# f = open("./allOutput/3-Clique-sinaweibo-DiffStartPoint.out")
 # f = open("./allOutput/4-Clique-sinaweibo-singleRW.out")
 # f = open("allOutput/4-Clique-sinaweibo-high-newStart.out")
 # f = open("allOutput/4-Clique-sinaweibo-high.out")
 
+# f = open("./allOutput/outputFiles/3-Clique-orkut-DiffStartPoint.out")
+# f = open("./allOutput/3-Clique-orkut-moreEdges.out")
+# f = open("./allOutput/4-Clique-orkut-moreEdges.out")
 # f = open("./allOutput/3-Clique-orkut-singleRW.out")
-f = open("./allOutput/4-Clique-orkut-singleRW.out")
+# f = open("./allOutput/4-Clique-orkut-singleRW.out")
 # f = open("allOutput/4-Clique-orkut.out")
 
 xarr = []
@@ -53,6 +59,7 @@ for line in f:
             # print(yarr)
             if xarr[0] > 0.0:
                 plt.plot(xarr, yarr, 'o', label=str(prevFractionEdges)+"%")
+                plt.plot(xarr[0], np.std(yarr), 'ko', label=str(prevFractionEdges)+"%")
                 # plt.plot(xarr[0], np.std(valuesYarr), 'o', label=str(prevFractionEdges)+"%")
                 fivePercentLineXarr.append(xarr[0])
                 fivePercentLineYarr.append(5.0)
@@ -83,6 +90,7 @@ for line in f:
     
 
 plt.plot(xarr, yarr, 'o', label=str(prevFractionEdges)+"%")
+plt.plot(xarr[0], np.std(yarr), 'ko', label=str(prevFractionEdges)+"%")
 # plt.plot(xarr[0], np.std(valuesYarr), 'o', label=str(prevFractionEdges)+"%")
 fivePercentLineXarr.append(xarr[0])
 fivePercentLineYarr.append(5.0)
@@ -95,14 +103,16 @@ valuesStd.append(np.std(valuesYarr))
 plt.plot(fivePercentLineXarr, fivePercentLineYarr, 'r--', label="5% Error")
 plt.plot(fivePercentLineXarr, fivePercentLineYarrNeg, 'r--', label="-5% Error")
 plt.plot(fivePercentLineXarr, exactCurve, 'r--*', label="Exact")
-# plt.plot(varXarr, varYarr, 'kD-', label="Std. Dev.")
+plt.plot(varXarr, varYarr, 'kD-', label="Std. Dev.")
 # plt.plot(varXarr, valuesStd, 'k*-', label="Std. Dev.(Estimate)")
 
 f.close()
 
-plt.title("soc " + graphName + "-- Error in Estimate for " + graphTypeToName[graphType])
+# plt.title("soc " + graphName + "-- Error in Estimate for " + graphTypeToName[graphType] + "-- (Single RW)")
+# plt.title("soc " + graphName + "-- Error in Estimate for " + graphTypeToName[graphType] + "-- (more edges)")
+plt.title("soc " + graphName + "-- Error in Estimate for " + graphTypeToName[graphType] + "-- (Random start node for each run)")
 plt.ylabel("% Error in Estimate")
 plt.xlabel("% Edges Observed")
-plt.legend(loc = "upper right")
+plt.legend(loc = "upper right", ncol=4)
 
 plt.show()

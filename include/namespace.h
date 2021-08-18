@@ -11,6 +11,7 @@
 #include <random>
 #include <sstream>
 #include <algorithm>
+#include <string>
 // #include <utility>
 
 using namespace std;

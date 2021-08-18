@@ -5,7 +5,7 @@
 
 using namespace std;
 
-double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> rwEdges) 
+double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> rwEdges, int l3Perc, int l4Perc) 
 {
     vector<double> dRVals = {0, 0};
 	vector<double> ljVals = {0, 0, rwEdges.size() * 1.0};
@@ -31,7 +31,8 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 	vector<VertexIdx> nextLevelDegrees;
 	double dR3 = 0.0;
 
-    int subsample_size = l2/20;
+    // int subsample_size = l2/20;
+    int subsample_size = l2 * l3Perc/100.0;
     ljVals.push_back(subsample_size);
 
     double X = 0, Y = 0, Z = 0;
@@ -88,7 +89,8 @@ double rwCount4Graphlets :: count4CliqueGraphlet(Graph &G, vector<OrderedEdge> r
 	Count l3 = nextLevelComponents.size();
 
 	cout << "size of triangles -- " << l3 << endl;
-	int l3_subsample_size = l3/5;
+	
+	int l3_subsample_size = l3 * l4Perc/100.0;
     ljVals.push_back(l3_subsample_size);
 
 	discrete_distribution<int> nextLevelDist (nextLevelDegrees.begin(), nextLevelDegrees.end());
