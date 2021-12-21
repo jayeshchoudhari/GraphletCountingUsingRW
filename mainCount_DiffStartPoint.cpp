@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
 	if (argc != 5) 
 	{
-		std::cerr << "ERROR -- Requires 3 parameters: 1) Input Graph filename; 2) CodeWord for Graphlet To Count; 3) Graph name; and 4) Randow walk edges(0) or U.A.R. edges (1)\n";
+		std::cerr << "ERROR -- Requires 4 parameters: 1) Input Graph filename; 2) CodeWord for Graphlet To Count; 3) Graph name; and 4) Random walk edges(0) or U.A.R. edges (1)\n";
 		std::cout << "Codeword for Graphlet to Count -- :\n" 
 					<< "1) g32: Triangle (3-Clique)\n" 
 					<< "2) g43: 4-Cycle\n"
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 					<< "6) g59: 5-Clique-But-1-Edge-(Almost-5-Clique)\n"
 					<< "7) g510: 5-Clique\n"
 					<< "8) g615: 6-Clique\n"
-					<< "Run code to count 3-Clique or Triangles: ./main-organized-make InputGraphFile g32 OutputFile";  
+					<< "Run code to count 3-Clique or Triangles using random walk edges: ./main-DiffStartPoint InputGraphFile g32 GraphName 0";  
 		exit(1);
 	}
 
