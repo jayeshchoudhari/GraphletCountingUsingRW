@@ -200,6 +200,41 @@ vector<OrderedEdge> Graph :: getAllEdgesFromRStepRandomWalk(Count numSteps, Vert
 	return localOrdRwEdges;
 }
 
+
+vector<OrderedEdge> Graph :: getUniformRandomEdges(Count numEdgesToSample)
+{
+	std::default_random_engine generator;
+  	std::uniform_int_distribution<int> distribution(0, nEdges-1);
+    vector<OrderedEdge> localOrdRwEdges;
+
+	for(unsigned int i = 0; i < numEdgesToSample; i++)
+	{
+		int edgeIdToSample = distribution(generator);
+		vector<VertexIdx> selectedEdge = edgeList[edgeIdToSample];
+
+        VertexIdx u, v, low_deg;
+        if((nodeDeg[selectedEdge[0]] <= nodeDeg[selectedEdge[1]]) || (nodeDeg[selectedEdge[0]] <= nodeDeg[selectedEdge[1]] && selectedEdge[0] < selectedEdge[1]))
+        {
+            u = selectedEdge[0];
+            v = selectedEdge[1];
+            low_deg = nodeDeg[selectedEdge[0]];
+        }
+        else
+        {
+            u = selectedEdge[1];
+            v = selectedEdge[0];
+            low_deg = nodeDeg[selectedEdge[1]];
+        } 
+        // cout << u << " " << v << " " << nodeDeg[u] << " " << nodeDeg[v] << " " << low_deg << "\t";
+        localOrdRwEdges.push_back(OrderedEdge{u, v, low_deg});
+
+	}
+	// cout << "\n";
+	// return localRwEdges;
+	return localOrdRwEdges;
+}
+
+
 bool Graph :: checkEdgeInAdjList(VertexIdx v1, VertexIdx v2)
 {
     bool boolVar; 
@@ -207,6 +242,22 @@ bool Graph :: checkEdgeInAdjList(VertexIdx v1, VertexIdx v2)
     boolVar = binary_search (adjList[v1].begin(), adjList[v1].end(), v2);
     return boolVar;
 }
+
+int Graph :: checkEdgeInAdjListInt(VertexIdx v1, VertexIdx v2)
+{
+    bool boolVar; 
+    // vector<VertexIdx> nbrs = adjList[v1];
+    boolVar = binary_search(adjList[v1].begin(), adjList[v1].end(), v2);
+    if(boolVar)
+    {
+    	return 1;
+    }
+    else
+    {
+    	return 0;
+    }
+}
+
 
 // check if the last vertex in the list of arguments is connected to at least 2 of other 3 vertices...
 bool Graph :: checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode)
@@ -248,6 +299,75 @@ bool Graph :: checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, Ve
 	return isConnected;
 }
 
+int Graph :: checkConnectionOfXToOtherThree(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode)
+{
+	int conns = 0;
+
+	int uxconn = checkEdgeInAdjListInt(uNode, xNode);
+	int vxconn = checkEdgeInAdjListInt(vNode, xNode);
+	int wxconn = checkEdgeInAdjListInt(wNode, xNode);
+
+	conns = uxconn + vxconn + wxconn;
+
+	return conns;
+}
+
+
+vector<VertexIdx> Graph :: checkConnectionXNotConnectedTo(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode)
+{
+	// int conns = 0;
+	vector<VertexIdx> notConnectedTo;
+
+	int uxconn = checkEdgeInAdjListInt(uNode, xNode);
+	int vxconn = checkEdgeInAdjListInt(vNode, xNode);
+	int wxconn = checkEdgeInAdjListInt(wNode, xNode);
+
+	if(uxconn == 0)
+	{
+		notConnectedTo.push_back(uNode);
+	}
+
+	if(vxconn == 0)
+	{
+		notConnectedTo.push_back(vNode);
+	}
+
+	if(wxconn == 0)
+	{
+		notConnectedTo.push_back(wNode);
+	}
+
+	// conns = uxconn + vxconn + wxconn;
+
+	return notConnectedTo;
+}
+
+
+vector<VertexIdx> Graph :: checkLastNodeNotConnectedTo(vector<VertexIdx> setOfNodes)
+{
+	// int conns = 0;
+	vector<VertexIdx> notConnectedTo;
+
+	VertexIdx lastNode = setOfNodes.back();
+
+
+	for(int i = 0; i < setOfNodes.size() - 1; i++)
+	{
+		int uxconn = checkEdgeInAdjListInt(setOfNodes[i], lastNode);
+		if(uxconn == 0)
+		{
+			notConnectedTo.push_back(setOfNodes[i]);
+		}
+
+		if(notConnectedTo.size() > 1)
+		{
+			break;
+		}
+	}
+
+	return notConnectedTo;
+}
+
 Count Graph :: getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode)
 {
 	vector<VertexIdx> uNeighbors = getNeighbors(uNode);
@@ -257,7 +377,7 @@ Count Graph :: getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode)
 	Count numNeighbors = (Count)uvNeighborsVector.size();
 	return numNeighbors;
 }
-
+/*
 struct pivotNeighborsAndSizes_3_2 Graph :: getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q)
 {
 	
@@ -314,4 +434,38 @@ struct pivotNeighborsAndSizes_3_2 Graph :: getDegreeAndNeighborsOf2Qset(vector<V
 
 	return neigborsAndSizes;
 }
+*/
 
+
+struct pivotNeighborsAndSizes_X_2 Graph :: getDegreeAndNeighborsOf2Qset(vector<VertexIdx> tempComponent, int q)
+{
+	struct pivotNeighborsAndSizes_X_2 neigborsAndSizes;
+
+	vector<vector<VertexIdx>> neighborsOfPairOfVertices;
+
+	int minNeighborSize = getNumVertices();
+
+	vector<unsigned int> sizeVector;
+
+	for(int i = 0; i < tempComponent.size(); i++)
+	{
+		vector<VertexIdx> uNeighbors = getNeighbors(tempComponent[i]);
+		for(int j = i+1; j < tempComponent.size(); j++)
+		{
+			// cout << i << j << endl;
+			vector<VertexIdx> vNeighbors = getNeighbors(tempComponent[j]);
+			vector<VertexIdx> neighborsSet = getUnionOfNeighbors(uNeighbors, vNeighbors);
+			sizeVector.push_back(neighborsSet.size());
+
+			if(minNeighborSize > neighborsSet.size())
+			{
+				minNeighborSize = neighborsSet.size();
+				neigborsAndSizes.pivotNeighbors = neighborsSet;
+			}
+		}
+	}
+
+	neigborsAndSizes.neighborSizes = sizeVector;
+
+	return neigborsAndSizes;
+}

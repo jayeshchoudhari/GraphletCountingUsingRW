@@ -4,10 +4,11 @@
 
 class Graph 
 {
-    private:
-        Count nVertices; 				//number of vertices in the graph
-        Count nEdges;     				//number of edges in this list
-        int smoothNessParam; 			// value of q = i + 1 - |cut(seg_i)|
+    public:
+
+    	Count nVertices; 						//number of vertices in the graph
+        Count nEdges;     						//number of edges in this list
+        int smoothNessParam; 					// value of q = i + 1 - |cut(seg_i)|
         vector <VertexIdx> nodeList;
         vector <vector<VertexIdx>> adjList;		// adj List
         vector <vector<VertexIdx>> edgeList;
@@ -21,9 +22,6 @@ class Graph
         // vector<int> g3s(3);
         vector <Count> g3s = vector<Count>(3);
 
-
-    public:
-
 		Graph(string fileName);
 		int initializeAdjList(Count numV, Count numE);
 
@@ -34,8 +32,15 @@ class Graph
         VertexIdx getKthNeighbor(VertexIdx u, int k);
     	bool checkEdgeInAdjList(VertexIdx v1, VertexIdx v2);
 		bool checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
-        
-		struct pivotNeighborsAndSizes_3_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
+
+		int checkEdgeInAdjListInt(VertexIdx v1, VertexIdx v2);
+		int checkConnectionOfXToOtherThree(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
+        vector<VertexIdx> checkConnectionXNotConnectedTo(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
+        vector<VertexIdx> checkLastNodeNotConnectedTo(vector<VertexIdx> setOfNodes);
+
+
+		// struct pivotNeighborsAndSizes_3_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
+		struct pivotNeighborsAndSizes_X_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
 		Count getCombinedNeighborSize(VertexIdx uNode, VertexIdx vNode);
         
         int printGraphDetails();
@@ -43,6 +48,9 @@ class Graph
 		// RW Functions...
 		vector<OrderedEdge> getAllEdgesFromRStepRandomWalk(Count numSteps, VertexIdx startNode);
 		// ePair lStepRandomWalk(Count, VertexIdx);
+
+		// UAR Edge Sample
+		vector<OrderedEdge> getUniformRandomEdges(Count numEdgesToSample);
 
 
 

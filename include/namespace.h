@@ -11,7 +11,6 @@
 #include <random>
 #include <sstream>
 #include <algorithm>
-#include <string>
 // #include <utility>
 
 using namespace std;
@@ -41,9 +40,22 @@ struct sampledGraphletInfo {
     vector<OrderedEdge> extendedGraphlet;
 };
 
-struct pivotNeighborsAndSizes_3_2{
+struct pivotNeighborsAndSizes_3_2 {
     vector<VertexIdx> pivotNeighbors;
     vector<unsigned int> neighborSizes;
+};
+
+struct pivotNeighborsAndSizes_X_2 {
+    vector<VertexIdx> pivotNeighbors;
+    vector<unsigned int> neighborSizes;
+};
+
+struct prevSubGraphletSet {
+    double graphletEstimate;
+    vector<vector<VertexIdx>> graphletsForNextLevel;
+    vector<VertexIdx> degreesForNextLevel;
+    vector<double> allSizeCliqueEstimates; 
+    double totalDegree;
 };
 
 #endif      // NAMESPACE_H
