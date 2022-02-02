@@ -15,6 +15,17 @@ VertexIdx getRandomStartPoint(Count numVertices)
 	return randVertId;
 }
 
+int notInList(vector<VertexIdx> initialRandomWalkNodes, VertexIdx nextNode)
+{
+	for(int i = 0; i < initialRandomWalkNodes.size(); i++)
+	{
+		if(nextNode == initialRandomWalkNodes[i])
+			return 0;
+	}
+	return 1;
+}
+
+
 uint64_t next()
 {
     uint64_t shuffle_table[4] = {23673, 34793, 5690, 4673};
