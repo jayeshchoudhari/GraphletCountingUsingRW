@@ -16,6 +16,7 @@ vector<VertexIdx> unorderedMapToVec(unordered_map<VertexIdx, int> localMap);
 vector<i64> getSizesOfPivotNeighborSetsForAllSubGraphlets(vector<vector<VertexIdx>> allMinNeighborSetsRj);
 vector<vector<int>> getCombinations(int N, int q);
 int notInList(vector<VertexIdx> initialRandomWalkNodes, VertexIdx nextNode);
+set<VertexIdx> getSetOfNodesFromEdges(vector<vector<VertexIdx>> listOfEdges);
 
 #endif 	// UTILITIES_H
 

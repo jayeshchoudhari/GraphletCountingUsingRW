@@ -259,6 +259,37 @@ int Graph :: checkEdgeInAdjListInt(VertexIdx v1, VertexIdx v2)
 }
 
 
+// check if 5 clique
+bool Graph :: checkClique(set<VertexIdx> setOf5Nodes)
+{
+	bool boolVar;
+	int innerFlag = 0;
+
+	for(auto it1 = setOf5Nodes.begin(); it1 != setOf5Nodes.end(); it1++)
+    {
+    	innerFlag = 0;
+        for(auto it2 = std::next(it1); it2 != setOf5Nodes.end(); it2++)
+        {
+        	bool checkEdgeBool = checkEdgeInAdjList(*it1, *it2);
+			if(!checkEdgeBool)
+			{
+				innerFlag = 1;
+				break;
+			}
+            // std::cout << *it1 << " " << *it2 << " ";
+        }
+        // std::cout << "\n";
+        if (innerFlag == 1)
+			break;
+    }
+
+	if(innerFlag)
+		return 0;
+	else
+		return 1;
+}
+
+
 // check if the last vertex in the list of arguments is connected to at least 2 of other 3 vertices...
 bool Graph :: checkConnectionOfXToAny2OfUVW(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode)
 {

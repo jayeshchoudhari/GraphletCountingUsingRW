@@ -38,6 +38,8 @@ class Graph
         vector<VertexIdx> checkConnectionXNotConnectedTo(VertexIdx uNode, VertexIdx vNode, VertexIdx wNode, VertexIdx xNode);
         vector<VertexIdx> checkLastNodeNotConnectedTo(vector<VertexIdx> setOfNodes);
 
+        bool checkClique(set<VertexIdx> setOf5Nodes);
+
 
 		// struct pivotNeighborsAndSizes_3_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);
 		struct pivotNeighborsAndSizes_X_2 getDegreeAndNeighborsOf2Qset(vector<VertexIdx>tempComponent, int q);

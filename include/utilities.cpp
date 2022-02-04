@@ -26,6 +26,23 @@ int notInList(vector<VertexIdx> initialRandomWalkNodes, VertexIdx nextNode)
 }
 
 
+set<VertexIdx> getSetOfNodesFromEdges(vector<vector<VertexIdx>> listOfEdges)
+{
+	set<VertexIdx> tempSet;
+
+	for(int i = 0; i < listOfEdges.size(); i++)
+	{
+		VertexIdx u = listOfEdges[i][0];
+		VertexIdx v = listOfEdges[i][1];
+
+		tempSet.insert(u);
+		tempSet.insert(v);
+	}
+
+	return tempSet;		
+}
+
+
 uint64_t next()
 {
     uint64_t shuffle_table[4] = {23673, 34793, 5690, 4673};

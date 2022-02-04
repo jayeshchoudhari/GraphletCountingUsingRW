@@ -49,13 +49,84 @@
 #include "namespace.h"
 #include "graphIO.h"
 #include "count5Graphlets.h"
-#include "include/utilities.h"
+#include "utilities.h"
 
 using namespace std;
 
-double rwCount5Graphlets :: chooseNeighborOfEdge(Graph &G, VertexIdx u, VertexIdx v)
+
+double rwCount5Graphlets :: SRWCount5CliqueGraphlet(Graph &G, int numSteps, Count numEdgesInG2) 
 {
-	vector<VertexIdx> nextEdge;
+	Count numVertices = G.getNumVertices();
+	double final5CliqueCounter = 0.0;
+
+	// Random starting point...
+	// 1. Start a random walk from a vertex u and take a step to vertex v.
+	VertexIdx startNode = getRandomStartPoint(numVertices);
+
+	// create an initial 4 graphlet first...
+	vector<vector<VertexIdx>> listOfRWEdges = getX3Edges(G, startNode);
+
+	// get the degree of each edge... (this can be optimized later...)
+	vector<Count> edgeDegreeList = getDegreeOfEdges(G, listOfRWEdges);
+
+	// get set of nodes in the edges accumulated till now... specifically the last 3 edges...
+	set<VertexIdx> currentSetOfNodes = getSetOfNodesFromEdges(listOfRWEdges);
+	set<VertexIdx>::iterator setIt;
+
+	for(int i = 0; i < numSteps + 1; i++)
+	{
+		// get the last edge to sample a new one...
+		vector<VertexIdx> lastEdge = listOfRWEdges.back();
+		
+		// Till a new node is found...
+		while(true)
+		{
+			// get a new uar edge... using the last edge to sample from...
+			vector<VertexIdx> newEdge = sampleUARNeighboringEdge(G, lastEdge[0], lastEdge[1]);
+			VertexIdx newNode = newEdge[1];
+			
+			// check if the new node exists in the already existing nodes...
+			// we need 5 unique nodes...
+			setIt = currentSetOfNodes.find(newNode);
+
+			if(setIt == currentSetOfNodes.end())
+			{
+				currentSetOfNodes.insert(newNode);
+				listOfRWEdges.push_back(newEdge);
+				edgeDegreeList.push_back(G.getDegree(newEdge[0]) + G.getDegree(newEdge[1]) - 2);
+				break;
+			}
+		}
+
+		// degree of the last 3 edges...
+		vector<Count> last3DegreeValues = vector<Count>(edgeDegreeList.end()-3, edgeDegreeList.end());
+
+		// check if the current set of nodes form a clique...
+		bool cliqueIdentifier = G.checkClique(currentSetOfNodes);
+		if (cliqueIdentifier)
+		{
+			// add m * d(e2) * d(e3) * d(e4) / 24
+			double qtyToAdd = numEdgesInG2;
+			for(int i = 0; i < last3DegreeValues.size(); i++)
+			{
+				qtyToAdd = qtyToAdd * last3DegreeValues[i];
+			}
+			qtyToAdd = qtyToAdd/24;
+			final5CliqueCounter += qtyToAdd;
+		}
+
+		// update new current set of nodes to the nodes from the last 3 edges...
+		vector<vector<VertexIdx>> last3Edges = vector<vector<VertexIdx>>(listOfRWEdges.end() - 3, listOfRWEdges.end());
+		currentSetOfNodes = getSetOfNodesFromEdges(last3Edges);
+	}
+	
+	return final5CliqueCounter;
+}
+
+
+vector<VertexIdx> rwCount5Graphlets :: sampleUARNeighboringEdge(Graph &G, VertexIdx uNode, VertexIdx vNode)
+{
+	VertexIdx samplerNode, newNode;
 
 	Count deg_of_u = G.getDegree(uNode);
 	Count deg_of_v = G.getDegree(vNode);
@@ -64,106 +135,74 @@ double rwCount5Graphlets :: chooseNeighborOfEdge(Graph &G, VertexIdx u, VertexId
 	int nextSamplerNodeId = rand() % deg_of_uv;
 
 	if(nextSamplerNodeId < deg_of_u)
-		nextSamplerNode = uNode;
+		samplerNode = uNode;
 	else
-		nextSamplerNode = vNode;
+		samplerNode = vNode;
 
-	Count numNbs = adjList[nextSamplerNode].size();
-	randNbr = rand() % numNbs;
-	nextNode = adjList[nextSamplerNode][randNbr];
+	Count numNbs = G.getDegree(samplerNode);
+	int randNbr = rand() % numNbs;
+	newNode = G.getKthNeighbor(samplerNode, randNbr);
 
+	vector<VertexIdx> nextEdge = {samplerNode, newNode};
 
-
-	return 
+	return nextEdge;
 }
 
 
-double rwCount5Graphlets :: getX4Edges(Graph &G, VertexIdx startNode)
+vector<vector<VertexIdx>> rwCount5Graphlets :: getX3Edges(Graph &G, VertexIdx startNode)
 {
 	VertexIdx uNode = startNode;
 
-	vector<VertexIdx> initialRandomWalkNodes;
-	initialRandomWalkNodes.push_back(uNode);
+	vector<VertexIdx> currentWalkNodes;
+	currentWalkNodes.push_back(uNode);
 
-	Count numNbs = adjList[uNode].size();
+	Count numNbs = G.getDegree(uNode);
 	int randNbr = rand() % numNbs;
-	VertexIdx vNode = adjList[uNode][randNbr];
+	VertexIdx vNode = G.getKthNeighbor(uNode, randNbr);
 
-	initialRandomWalkNodes.push_back(vNode);
+	currentWalkNodes.push_back(vNode);
 	// 2. Now the current edge (which is a vertex in G2) is e = {u,v}
 	// ePair lastPair = make_pair(uNode, vNode);
-	vector<vector<VertexIdx>> list_of_edges;
+	vector<vector<VertexIdx>> XkEdges;
 	vector<VertexIdx> edgeVec;
 	edgeVec.push_back(uNode);
 	edgeVec.push_back(vNode);
-	listOfEdgesX4.push_back(edgeVec);
+	XkEdges.push_back(edgeVec);
 	VertexIdx nextNode;
 
-	while(True)
+	while(true)
 	{
-		Count deg_of_u = G.getDegree(uNode);
-		Count deg_of_v = G.getDegree(vNode);
-		Count deg_of_uv = deg_of_u + deg_of_v;
+		vector<VertexIdx> uarEdge = sampleUARNeighboringEdge(G, uNode, vNode);
+		nextNode = uarEdge[1];
 
-		int nextSamplerNodeId = rand() % deg_of_uv;
-
-		if(nextSamplerNodeId < deg_of_u)
-			nextSamplerNode = uNode;
-		else
-			nextSamplerNode = vNode;
-		
-		Count numNbs = adjList[nextSamplerNode].size();
-		randNbr = rand() % numNbs;
-		nextNode = adjList[nextSamplerNode][randNbr];
-		if(nextNode notInList(initialRandomWalkNodes, nextNode))
+		if(notInList(currentWalkNodes, nextNode))
 		{
-			uNode = nextSamplerNode;
-			vNode = nexNode;
-			initialRandomWalkNodes.push_back(vNode);
+			uNode = uarEdge[0];
+			vNode = nextNode;
+			currentWalkNodes.push_back(vNode);
 
 			// add the last edge to the list of edges...
-			vector<VertexIdx> edgeVec;
-			edgeVec.push_back(uNode);
-			edgeVec.push_back(vNode);
-			listOfEdgesX4.push_back(edgeVec);
+			XkEdges.push_back(uarEdge);
 
-			if(listOfEdgesX4.size() == 4)
-				break
+			if(XkEdges.size() == 3)
+				break;
 		}
 		else
 		{
 			continue;	
 		}
-
 	}
 
-	return listOfEdgesX4;
+	return XkEdges;
 } 
 
-
-double rwCount5Graphlets :: SRWCount5CliqueGraphlet(Graph &G, int numSteps) 
+vector<Count> rwCount5Graphlets :: getDegreeOfEdges(Graph &G, vector<vector<VertexIdx>> edgeList)
 {
-	Count numVertices = G.getNumVertices();
-
-	// Random starting point...
-	// 1. Start a random walk from a vertex u and take a step to vertex v.
-	VertexIdx startNode = getRandomStartPoint(numVertices);
-
-	// create an initial 4 graphlet first...
-	vector<vector<VertexIdx>> listOfRWEdges = getX4Edges(G, startNode);
-	vector<VertexIdx> lastSetOfNodes;
-	set<VertexIdx> last5Nodes;
-	for(int i = 0; i < listOfRWEdges; i++)
+	vector<Count> degreeList;
+	for(int i = 0; i < edgeList.size(); i++)
 	{
-		last5Nodes.insert(listOfRWEdges[0][0]);
-		last5Nodes.insert(listOfRWEdges[0][1]);
+		degreeList.push_back(G.getDegree(edgeList[i][0]) + G.getDegree(edgeList[i][1]) - 2);
 	}
 
-	for(int i = 0; i < numSteps; i++)
-	{
-		vector<VertexIdx> lastEdge = listOfRWEdges.back();
-
-	}
-	
-
+	return degreeList;
 }
