@@ -54,10 +54,12 @@
 using namespace std;
 
 
-double rwCount5Graphlets :: SRWCount5CliqueGraphlet(Graph &G, int numSteps, Count numEdgesInG2) 
+double rwCount5Graphlets :: SRWCount5CliqueGraphlet(Graph &G, int numSteps, double numEdgesInG2) 
 {
 	Count numVertices = G.getNumVertices();
 	double final5CliqueCounter = 0.0;
+
+	Count cliquesFound = 0;
 
 	// Random starting point...
 	// 1. Start a random walk from a vertex u and take a step to vertex v.
@@ -79,47 +81,59 @@ double rwCount5Graphlets :: SRWCount5CliqueGraphlet(Graph &G, int numSteps, Coun
 		vector<VertexIdx> lastEdge = listOfRWEdges.back();
 		
 		// Till a new node is found...
-		while(true)
-		{
-			// get a new uar edge... using the last edge to sample from...
-			vector<VertexIdx> newEdge = sampleUARNeighboringEdge(G, lastEdge[0], lastEdge[1]);
-			VertexIdx newNode = newEdge[1];
-			
-			// check if the new node exists in the already existing nodes...
-			// we need 5 unique nodes...
-			setIt = currentSetOfNodes.find(newNode);
+		// while(true)
+		// {
+		// get a new uar edge... using the last edge to sample from...
+		vector<VertexIdx> newEdge = sampleUARNeighboringEdge(G, lastEdge[0], lastEdge[1]);
+		VertexIdx newNode = newEdge[1];
+		
+		// check if the new node exists in the already existing nodes...
+		// we need 5 unique nodes...
+		setIt = currentSetOfNodes.find(newNode);
 
-			if(setIt == currentSetOfNodes.end())
-			{
-				currentSetOfNodes.insert(newNode);
-				listOfRWEdges.push_back(newEdge);
-				edgeDegreeList.push_back(G.getDegree(newEdge[0]) + G.getDegree(newEdge[1]) - 2);
-				break;
-			}
-		}
+		// if(setIt == currentSetOfNodes.end())
+		// {
+		currentSetOfNodes.insert(newNode);
+		listOfRWEdges.push_back(newEdge);
+		edgeDegreeList.push_back(G.getDegree(newEdge[0]) + G.getDegree(newEdge[1]) - 2);
+			// break;
+		// }
+		// }
 
 		// degree of the last 3 edges...
 		vector<Count> last3DegreeValues = vector<Count>(edgeDegreeList.end()-3, edgeDegreeList.end());
 
 		// check if the current set of nodes form a clique...
+
 		bool cliqueIdentifier = G.checkClique(currentSetOfNodes);
 		if (cliqueIdentifier)
 		{
-			// add m * d(e2) * d(e3) * d(e4) / 24
-			double qtyToAdd = numEdgesInG2;
-			for(int i = 0; i < last3DegreeValues.size(); i++)
+			// cout << "Clique Found -- " << endl;
+			// printSet(currentSetOfNodes);
+			if(currentSetOfNodes.size() == 5)
 			{
-				qtyToAdd = qtyToAdd * last3DegreeValues[i];
+				cliquesFound += 1;
+
+				// add m * d(e2) * d(e3) * d(e4) / 240
+				// m / 24 is considered at the end...
+				double qtyToAdd = 1.0;
+				for(int i = 0; i < last3DegreeValues.size(); i++)
+				{
+					qtyToAdd = qtyToAdd * last3DegreeValues[i];
+				}
+				// qtyToAdd = qtyToAdd/24;
+				final5CliqueCounter += qtyToAdd;
 			}
-			qtyToAdd = qtyToAdd/24;
-			final5CliqueCounter += qtyToAdd;
 		}
 
 		// update new current set of nodes to the nodes from the last 3 edges...
 		vector<vector<VertexIdx>> last3Edges = vector<vector<VertexIdx>>(listOfRWEdges.end() - 3, listOfRWEdges.end());
+		currentSetOfNodes.clear();
 		currentSetOfNodes = getSetOfNodesFromEdges(last3Edges);
 	}
 	
+	cout << "Total Cliques found = " << cliquesFound << endl;
+	final5CliqueCounter = (final5CliqueCounter * numEdgesInG2)/(2 * 240 * numSteps);
 	return final5CliqueCounter;
 }
 
