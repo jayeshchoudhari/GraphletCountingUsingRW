@@ -25,14 +25,30 @@ int main(int argc, char *argv[])
 					<< "6) g59: 5-Clique-But-1-Edge-(Almost-5-Clique)\n"
 					<< "7) g510: 5-Clique\n"
 					<< "8) g615: 6-Clique\n"
+					<< "9) SRWg510: 5-Clique using SRW2\n"
 					<< "Run code to count 3-Clique or Triangles using random walk edges: ./main-DiffStartPoint InputGraphFile g32 GraphName 0";  
 		exit(1);
 	}
+
+	// sinaweibo G2Degree = 1611189745086
+	// orkut G2Degree = 73948630564
 
 	string inputFileName = argv[1];
 	string whatCount = argv[2];
 	string outFileGraphName = argv[3];
 	int rwOrUar = atoi(argv[4]);
+
+	double numEdgesInG2;
+
+	if(outFileGraphName.compare("orkut") == 0 || outFileGraphName.compare("Orkut") == 0)
+	{
+		numEdgesInG2 = 73948630564.0;
+	}
+	else if(outFileGraphName.compare("sinaweibo") == 0 || outFileGraphName.compare("Sinaweibo") == 0)
+	{
+		numEdgesInG2 = 1611189745086.0;
+	}
+
 
 	cout << "Initializing graph... Populating Edges in Memory...\n";
 	Graph G(inputFileName);				// constructor
@@ -66,9 +82,9 @@ int main(int argc, char *argv[])
 	// cout << "Got random start points -- "<< randStartPoint << "\n";
 
 	// vector<float> percEdges = {5, 7, 10, 12, 15};
-	vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.50, 10.0};
+	// vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.50, 10.0};
 	// vector<double> percEdges = {0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0};
-	// vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
+	vector<double> percEdges = {1.5, 2.0, 2.5, 3.0};
 	// vector<double> percEdges = {3.0};
 
 	vector<int> l3SamplesPerc = {80};
@@ -210,6 +226,13 @@ int main(int argc, char *argv[])
 				kGraphletCount = xSubGraphlet.graphletEstimate;
 				allSizeEstimates = xSubGraphlet.allSizeCliqueEstimates;
 			}
+			else if(whatCount.compare("SRWg510") == 0)
+			{
+				rwCount5Graphlets C5;
+				int numSteps = lStep;
+				kGraphletCount =  C5.SRWCount5CliqueGraphlet(G, numSteps, numEdgesInG2);  // passing all seg_2's
+				allSizeEstimates.push_back(kGraphletCount);
+			} 
 
 			endClock = chrono::steady_clock::now();
 
