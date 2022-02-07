@@ -1,4 +1,4 @@
-all: main-organized-make main-SingleRW main-DiffStartPoint g2Degree
+all: main-DiffStartPoint
 
 main-DiffStartPoint: mainCount_DiffStartPoint.o countCliques.o count3Graphlets.o count4Graphlets.o count5Graphlets.o SRWcount5cliques.o graphIO.o utilities.o
 	g++ -O3 mainCount_DiffStartPoint.o countCliques.o count3Graphlets.o count4Graphlets.o count5Graphlets.o SRWcount5cliques.o graphIO.o utilities.o -o main-DiffStartPoint
