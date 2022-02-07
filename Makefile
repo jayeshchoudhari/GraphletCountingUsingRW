@@ -12,6 +12,9 @@ main-organized-make: mainCount.o countCliques.o count3Graphlets.o count4Graphlet
 g2Degree: computeSRWG2Degree.o graphIO.o utilities.o
 	g++ -O3 computeSRWG2Degree.o graphIO.o utilities.o -o g2Degree
 
+testGFunc: testGraphFunctionality.o graphIO.o utilities.o
+	g++ -O3 testGraphFunctionality.o graphIO.o utilities.o -o testGFunc
+
 mainCount.o: mainCount.cpp  ./include/namespace.h
 	g++ -O3 -c mainCount.cpp
 
@@ -22,9 +25,11 @@ mainCount_SingleRW.o: mainCount_SingleRW.cpp  ./include/namespace.h
 	g++ -O3 -c mainCount_SingleRW.cpp
 
 
-
 SRWcount5cliques.o: ./include/SRWcount5cliques.cpp  ./include/count5Graphlets.h  ./include/utilities.h ./include/utilities.cpp ./include/graphIO.h ./include/namespace.h
 	g++ -O3 -c ./include/SRWcount5cliques.cpp	
+
+testGraphFunctionality.o: ./testGraphFunctionality.cpp  ./include/namespace.h ./include/graphIO.h  ./include/utilities.h
+	g++ -O3 -c testGraphFunctionality.cpp
 
 computeSRWG2Degree.o: ./computeSRWG2Degree.cpp  ./include/namespace.h ./include/graphIO.h  ./include/utilities.h
 	g++ -O3 -c computeSRWG2Degree.cpp
